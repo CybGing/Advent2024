@@ -999,20 +999,55 @@ INPUT = """87 90 92 95 96 93
 89 91 92 93 94 96 97
 58 56 55 52 49 48 45 43"""
 
+def is_sorted(values):
+    ascending = values == sorted(values)
+    descending = values == sorted(values, reverse=True)
+    return ascending or descending
+
+def ordering_check(sublist):
+    ascending_rep = all(1 <= abs(sublist[i+1] - sublist[i]) <= 3 for i in range(len(sublist) - 1))
+    descending_rep = all(1 <= abs(sublist[i] - sublist[i+1]) <= 3 for i in range(len(sublist) - 1))
+
+    return (ascending_rep or descending_rep) and is_sorted(sublist)
+
+def check_one_removal(sublist):
+    for i in range(len(sublist)):
+        modified_sublist = sublist[:i] + sublist[i+1:]
+        if ordering_check(modified_sublist):
+            return True
+    return False
+
+def check_unsafe_reports():
+    for sublist in unsafe_reports:
+        is_valid = check_one_removal(sublist)
+        if is_valid:
+            safe_reports.append(sublist)
+
 if __name__ == '__main__':
     rows = INPUT.split('\n')
-    print(rows)
 
+    #task1
+    all_reports = []
     safe_reports = []
     for item in rows:
         split_value = item.split(' ')
         report = list(map(int, split_value))
-        print(report)
-        ascending = report == sorted(report)
-        descending = report == sorted(report, reverse=True)
-        if ascending == True or descending == True:
+        ##print(report)
+        all_reports.append(report)
+        if is_sorted(report):
             if all(1 <= abs(report[i] - report[i + 1]) <= 3
                    for i in range(len(report) - 1)):
                         safe_reports.append(report)
 
-    print(len(safe_reports))
+    print(f"Task1 result:", len(safe_reports))
+
+    #task2
+    unsafe_reports = list(all_reports)
+    for item in safe_reports:
+        unsafe_reports.remove(item)
+
+    check_unsafe_reports()
+    print(f"Task2 result:", len(safe_reports))
+
+
+
