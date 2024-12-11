@@ -1048,6 +1048,3 @@ if __name__ == '__main__':
 
     check_unsafe_reports()
     print(f"Task2 result:", len(safe_reports))
-
-
-
